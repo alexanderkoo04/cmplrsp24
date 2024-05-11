@@ -18,18 +18,22 @@ std::string clean_text(const std::string& text) {
 
         std::string stripped_line = line.substr(start, end - start + 1);
 
-        if (stripped_line.rfind("//", 0) == 0 && stripped_line.find_last_of("//") == stripped_line.length() - 1) {
+        auto comment_pos = stripped_line.find("//");
+        bool endof = false;
+        if (comment_pos == stripped_line.size() - 2) {
+            endof = true;
+        }
+        if (comment_pos != std::string::npos) {
+            stripped_line = stripped_line.substr(0, comment_pos);
+        }
+        if (endof) {
             continue;
         }
-        else if (stripped_line.find_last_of("//") == stripped_line.length() - 1 && stripped_line.find_first_of("//") != stripped_line.length() - 1) {
-            stripped_line = line.substr(start, end - start - 1);
-        }
-        else if (stripped_line.rfind("//") == 0) {
+
+        if (stripped_line.empty()) {
             continue;
         }
-        else if (stripped_line.rfind("//") == stripped_line.length() - 1 && stripped_line.find_first_of("//") == stripped_line.length() - 1) {
-            continue;
-        }
+        
 
         std::istringstream token_stream(stripped_line);
         std::vector<std::string> tokens;
